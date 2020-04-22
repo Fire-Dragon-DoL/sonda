@@ -1,4 +1,4 @@
-defmodule Sonda.MemorySink do
+defmodule Sonda.Sink.Memory do
   defstruct signals: :any, records: []
 
   @type record :: {Sonda.signal(), NaiveDateTime.t(), any()}
@@ -31,7 +31,7 @@ defmodule Sonda.MemorySink do
           signal :: Sonda.signal(),
           timestamp :: NaiveDateTime.t(),
           data :: any()
-        ) :: :ok
+        ) :: t()
   def record(sink, signal, timestamp, data) do
     case record_signal?(sink.signals, signal) do
       false ->

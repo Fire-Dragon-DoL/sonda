@@ -5,6 +5,6 @@ defprotocol Sonda.Sink do
           signal :: Sonda.signal(),
           timestamp :: NaiveDateTime.t(),
           data :: any()
-        ) :: :ok
+        ) :: t()
   def record(sink, signal, timestamp, data)
 end

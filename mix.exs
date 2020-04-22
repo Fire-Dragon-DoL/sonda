@@ -7,7 +7,8 @@ defmodule Sonda.MixProject do
       version: "0.1.0",
       elixir: ">= 1.6.0",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      consolidate_protocols: consolidate_protocols(Mix.env())
     ]
   end
 
@@ -22,4 +23,7 @@ defmodule Sonda.MixProject do
       {:dialyxir, "1.0.0", only: [:dev], runtime: false}
     ]
   end
+
+  def consolidate_protocols(:test), do: false
+  def consolidate_protocols(_), do: true
 end

@@ -1,8 +1,10 @@
 defprotocol Sonda.Sink do
   @type t :: any()
+  @type signal :: atom()
+
   @spec record(
           sink :: t(),
-          signal :: Sonda.signal(),
+          signal :: signal(),
           timestamp :: NaiveDateTime.t(),
           data :: any()
         ) :: t()

@@ -17,7 +17,9 @@ defmodule Sonda.MixProject do
   end
 
   # Run "mix help deps" to learn about dependencies.
-  defp deps do
-    []
+  def deps do
+    [
+      {:dialyxir, "1.0.0", only: [:dev], runtime: false}
+    ]
   end
 end

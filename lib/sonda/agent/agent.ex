@@ -1,6 +1,12 @@
 defmodule Sonda.Agent do
   use Agent
 
+  @type t :: Agent.agent()
+
+  @spec start_link(config :: {Sonda.Sink.t(), (() -> NaiveDateTime.t())}) ::
+          Agent.on_start()
+  def start_link(config), do: start_link(config, [])
+
   @spec start_link(
           config :: {Sonda.Sink.t(), (() -> NaiveDateTime.t())},
           opts :: keyword()
@@ -11,8 +17,8 @@ defmodule Sonda.Agent do
   end
 
   @spec record(
-          server :: Agent.agent(),
-          signal :: Sonda.signal(),
+          server :: t(),
+          signal :: Sonda.Sink.signal(),
           data :: any()
         ) ::
           :ok
@@ -21,6 +27,16 @@ defmodule Sonda.Agent do
       timestamp = clock_now.()
       sink = Sonda.Sink.record(sink, signal, timestamp, data)
       {sink, clock_now}
+    end)
+  end
+
+  @spec get_sink(
+          server :: t(),
+          (Sonda.Sink.t() -> any())
+        ) :: any()
+  def get_sink(server, fun) do
+    Agent.get(server, fn {sink, _} ->
+      fun.(sink)
     end)
   end
 end

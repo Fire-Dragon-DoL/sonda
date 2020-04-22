@@ -16,9 +16,15 @@ defmodule Sonda.Sink.Multi do
     struct(__MODULE__, opts)
   end
 
+  defimpl Sonda.Sink do
+    def record(%module{} = sink, signal, timestamp, data) do
+      module.record(sink, signal, timestamp, data)
+    end
+  end
+
   @spec record(
           sink :: t(),
-          signal :: Sonda.signal(),
+          signal :: Sonda.Sink.signal(),
           timestamp :: NaiveDateTime.t(),
           data :: any()
         ) :: t()

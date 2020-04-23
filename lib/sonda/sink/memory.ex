@@ -1,5 +1,9 @@
 defmodule Sonda.Sink.Memory do
-  defstruct signals: :any, records: []
+  defmodule Defaults do
+    def signals, do: :any
+  end
+
+  defstruct signals: Defaults.signals(), records: []
 
   @type record :: {Sonda.Sink.signal(), NaiveDateTime.t(), any()}
   @type accepted_signals :: :any | [Sonda.Sink.signal()]

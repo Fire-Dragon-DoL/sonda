@@ -2,7 +2,7 @@ defmodule Sonda.Agent.Default do
   @type config_opts :: [
           {:sinks, [Sonda.Sink.t()]} | {:clock_now, (() -> NaiveDateTime.t())}
         ]
-  @type t :: {Sonda.Sink.Multi.t(), (() -> NaiveDateTime.t())}
+  @type t :: {Sonda.Sink.Proxy.t(), (() -> NaiveDateTime.t())}
 
   @spec configure(opts :: config_opts()) :: t()
   def configure(opts \\ []) do
@@ -22,7 +22,7 @@ defmodule Sonda.Agent.Default do
       end
 
     opts = Keyword.put(opts, :sinks, sinks)
-    sink = Sonda.Sink.Multi.configure(opts)
+    sink = Sonda.Sink.Proxy.configure(opts)
     {sink, clock_now}
   end
 
@@ -121,7 +121,7 @@ defmodule Sonda.Agent.Default do
 
   @spec get_memory_sink(
           server :: Sonda.Agent.t(),
-          (Sonda.Sink.Multi.t() -> any())
+          (Sonda.Sink.Proxy.t() -> any())
         ) :: any()
   def get_memory_sink(server, fun) do
     Sonda.Agent.get_sink(server, fn multi_sink ->

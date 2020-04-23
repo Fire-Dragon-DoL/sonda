@@ -197,9 +197,9 @@ end
 When Sonda is started using `Sonda.start_link/*`, a
 [Sonda.Agent](https://hexdocs.pm/sonda/Sonda.Agent.html) is started behind
 the scenes, holding the state of a sink.
-By default, a [Sonda.Sink.Multi](#sonda-sink-multi) is used, which is a proxy
+By default, a [Sonda.Sink.Proxy](#sonda-sink-multi) is used, which is a proxy
 to multiple sinks.
-The default configuration provided to `Sonda.Sink.Multi` holds only one
+The default configuration provided to `Sonda.Sink.Proxy` holds only one
 sink: [Sonda.Sink.Memory](https://hexdocs.pm/sonda/Sonda.Sink.Memory.html),
 which provides the functionality of appending and inspecting messages.
 
@@ -208,7 +208,7 @@ which provides the functionality of appending and inspecting messages.
 The `Sonda` module delegates all the work to a special `Sonda.Agent` called
 `Sonda.Agent.Default`.
 `Sonda` utility functions can be used as long as
-the configuration of the `Sonda.Agent` uses a `Sonda.Sink.Multi` with the
+the configuration of the `Sonda.Agent` uses a `Sonda.Sink.Proxy` with the
 first sink being a `Sonda.Sink.Memory`.
 
 This is not a limitation, feel free to create your own utility module and use
@@ -239,7 +239,7 @@ Sonda uses
 the scenes to provide the functionality of, appending messages and inspecting
 them.
 
-### Sonda.Sink.Multi
+### Sonda.Sink.Proxy
 
 Sonda provides out of the box support for using multiple sinks.
 When starting Sonda, the option to provide an alternative list of sinks can

@@ -1,4 +1,4 @@
-defmodule Sonda.Sink.Multi do
+defmodule Sonda.Sink.Proxy do
   defstruct sinks: []
 
   @type t :: %__MODULE__{

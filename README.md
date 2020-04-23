@@ -186,3 +186,9 @@ TODO:
 - Multiple sinks
 - Custom sinks
 - Custom clock
+
+## Thanks
+
+This library is heavily influenced by
+[telemetry](https://github.com/eventide-project/telemetry), the
+[Eventide](https://eventide-project.org/) library for ruby instrumentation.

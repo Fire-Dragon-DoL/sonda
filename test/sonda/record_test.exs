@@ -13,7 +13,7 @@ defmodule Sonda.RecordTest do
   @now ~N[1970-01-01 00:00:00.000000]
 
   test "Timestamp is recorded" do
-    pid = start_supervised!({Sonda, now: fn -> @now end})
+    pid = start_supervised!({Sonda, clock_now: fn -> @now end})
 
     Sonda.record(pid, :a_signal, nil)
     recorded? = Sonda.recorded?(pid, &match?({_, @now, _}, &1))

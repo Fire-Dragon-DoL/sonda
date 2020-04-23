@@ -262,8 +262,47 @@ other_sink = %OtherSink{} # This is the sink implemented by you
 {:ok, pid} = Sonda.start_link(sinks: [memory_sink, other_sink])
 ```
 
-TODO:
-- Custom clock
+### Custom timestamps
+
+By default, Sonda uses `NaiveDateTime.utc_now/0` to determine the timestamp
+of a recorded message. This behavior can be altered by providing the option
+`:clock_now` when starting Sonda like in the following example:
+
+```elixir
+{:ok, pid} = Sonda.start_link(clock_now: fn -> DateTime.utc_now() end)
+# Timestamps will now be of type DateTime
+```
+
+Notice that Sonda is just passing down this option to `Sonda.Agent`, which
+is the module actually supporting the `:clock_now` option.
+
+### Using a custom Sonda.Agent
+
+By using a custom `Sonda.Agent` and a custom sink implementing `Sonda.Sink`
+protocol, it's possible to greatly alter the behavior of Sonda, giving
+access to the lowest levels of machinery available in the library.
+
+`Sonda.Agent` is a `GenServer` that holds a `Sonda.Agent.clock` function to
+provide timestamps and a `Sonda.Sink` data structure.
+
+Only two functions are provided:
+
+#### record(server, signal, data)
+
+- `server` is the identifier for the `Agent`, usually a `PID`
+- `signal` is an atom for the message
+- `data` is any type of data that is attached to the message
+
+This function is used to call `record` on the sink stored inside this agent.
+
+#### get_sink(server, sink_block)
+
+- `server` is the identifier for the `Agent`, usually a `PID`
+- `sink_block` is a function which accepts one argument: the sink stored in
+  the agent. It can return any type of data, which in turn will be returned by
+  `get_sink/2`
+
+This function is used to access the sink, to perform any reading operation.
 
 ## Thanks
 

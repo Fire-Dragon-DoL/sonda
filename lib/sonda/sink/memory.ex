@@ -5,15 +5,15 @@ defmodule Sonda.Sink.Memory do
 
   defstruct signals: Defaults.signals(), records: []
 
-  @type record :: {Sonda.Sink.signal(), NaiveDateTime.t(), any()}
+  @type message :: {Sonda.Sink.signal(), Sonda.Sink.timestamp(), any()}
   @type accepted_signals :: :any | [Sonda.Sink.signal()]
   @type config_opts :: [
           {:signals, accepted_signals()}
         ]
-  @type matcher :: (record() -> boolean())
+  @type matcher :: (message() -> boolean())
   @type t :: %__MODULE__{
           signals: accepted_signals(),
-          records: [record()]
+          records: [message()]
         }
 
   defimpl Sonda.Sink do
@@ -33,7 +33,7 @@ defmodule Sonda.Sink.Memory do
   @spec record(
           sink :: t(),
           signal :: Sonda.Sink.signal(),
-          timestamp :: NaiveDateTime.t(),
+          timestamp :: Sonda.Sink.timestamp(),
           data :: any()
         ) :: t()
   def record(sink, signal, timestamp, data) do
@@ -56,12 +56,12 @@ defmodule Sonda.Sink.Memory do
     end)
   end
 
-  @spec records(sink :: t()) :: [record()]
+  @spec records(sink :: t()) :: [message()]
   def records(sink) do
     Enum.reverse(sink.records)
   end
 
-  @spec records(sink :: t(), match :: matcher()) :: [record()]
+  @spec records(sink :: t(), match :: matcher()) :: [message()]
   def records(sink, match) do
     sink.records
     |> Enum.filter(match)
@@ -74,7 +74,7 @@ defmodule Sonda.Sink.Memory do
   def record_signal?(%{signals: signals}, signal), do: signal in signals
 
   @spec one_record(sink :: t(), match :: matcher()) ::
-          {:ok, record()} | {:error, :none} | {:error, :multiple}
+          {:ok, message()} | {:error, :none} | {:error, :multiple}
   def one_record(sink, match) do
     records = records(sink, match)
 

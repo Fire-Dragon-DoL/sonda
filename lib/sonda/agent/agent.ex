@@ -2,13 +2,13 @@ defmodule Sonda.Agent do
   use Agent
 
   @type t :: Agent.agent()
+  @type clock :: (() -> Sonda.Sink.timestamp())
 
-  @spec start_link(config :: {Sonda.Sink.t(), (() -> NaiveDateTime.t())}) ::
-          Agent.on_start()
+  @spec start_link(config :: {Sonda.Sink.t(), clock()}) :: Agent.on_start()
   def start_link(config), do: start_link(config, [])
 
   @spec start_link(
-          config :: {Sonda.Sink.t(), (() -> NaiveDateTime.t())},
+          config :: {Sonda.Sink.t(), clock()},
           opts :: keyword()
         ) ::
           Agent.on_start()

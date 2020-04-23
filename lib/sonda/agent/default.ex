@@ -1,8 +1,8 @@
 defmodule Sonda.Agent.Default do
   @type config_opts :: [
-          {:sinks, [Sonda.Sink.t()]} | {:clock_now, (() -> NaiveDateTime.t())}
+          {:sinks, [Sonda.Sink.t()]} | {:clock_now, Sonda.Agent.clock()}
         ]
-  @type t :: {Sonda.Sink.Proxy.t(), (() -> NaiveDateTime.t())}
+  @type t :: {Sonda.Sink.Proxy.t(), Sonda.Agent.clock()}
 
   @spec configure(opts :: config_opts()) :: t()
   def configure(opts \\ []) do
@@ -73,7 +73,7 @@ defmodule Sonda.Agent.Default do
     end)
   end
 
-  @spec records(server :: Sonda.Agent.t()) :: [Sonda.Sink.Memory.record()]
+  @spec records(server :: Sonda.Agent.t()) :: [Sonda.Sink.Memory.message()]
   def records(server) do
     get_memory_sink(server, fn mem_sink ->
       Sonda.Sink.Memory.records(mem_sink)
@@ -81,7 +81,7 @@ defmodule Sonda.Agent.Default do
   end
 
   @spec records(server :: Sonda.Agent.t(), match :: Sonda.Sink.Memory.matcher()) ::
-          [Sonda.Sink.Memory.record()]
+          [Sonda.Sink.Memory.message()]
   def records(server, match) do
     get_memory_sink(server, fn mem_sink ->
       Sonda.Sink.Memory.records(mem_sink, match)
@@ -100,7 +100,7 @@ defmodule Sonda.Agent.Default do
           server :: Sonda.Agent.t(),
           match :: Sonda.Sink.Memory.matcher()
         ) ::
-          {:ok, Sonda.Sink.Memory.record()}
+          {:ok, Sonda.Sink.Memory.message()}
           | {:error, :none}
           | {:error, :multiple}
   def one_record(server, match) do

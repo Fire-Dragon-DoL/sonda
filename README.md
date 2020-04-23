@@ -206,7 +206,7 @@ which provides the functionality of appending and inspecting messages.
 ### The Sonda module
 
 The `Sonda` module delegates all the work to a special `Sonda.Agent` called
-`Sonda.Agent.Default`.
+[Sonda.Agent.Default](https://hexdocs.pm/sonda/Sonda.Agent.Default.html).
 `Sonda` utility functions can be used as long as
 the configuration of the `Sonda.Agent` uses a `Sonda.Sink.Proxy` with the
 first sink being a `Sonda.Sink.Memory`.

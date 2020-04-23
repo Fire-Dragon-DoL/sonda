@@ -1,11 +1,16 @@
 defmodule Sonda.MixProject do
   use Mix.Project
 
+  @external_resource path = Path.join(__DIR__, "VERSION")
+  @version path |> File.read!() |> String.trim()
+
   def project do
     [
       app: :sonda,
-      version: "0.1.0",
+      version: @version,
       elixir: ">= 1.6.0",
+      package: package(),
+      test_paths: ["test/automated"],
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       consolidate_protocols: consolidate_protocols(Mix.env()),
@@ -18,11 +23,31 @@ defmodule Sonda.MixProject do
     ]
   end
 
+  def package do
+    [
+      maintainers: ["Francesco Belladonna"],
+      description:
+        "Sonda is a telemetry library for Elixir, providing configurable sinks for
+      recording signals",
+      licenses: ["MIT"],
+      links: %{"GitHub" => "https://github.com/Fire-Dragon-DoL/sonda"},
+      files: [
+        ".formatter.exs",
+        "mix.exs",
+        "README.md",
+        "VERSION",
+        "test",
+        "lib",
+        "LICENSE"
+      ]
+    ]
+  end
+
   def docs do
     [
       main: "README.md",
       extras: [
-        "README.md": [filename: "README.md", title: "Usage"]
+        "README.md": [filename: "README.md", title: "Getting Started"]
       ],
       extra_section: "GUIDES",
       formatters: ["html"],

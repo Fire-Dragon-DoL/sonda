@@ -152,6 +152,16 @@ Sonda.records(pid)
 # ]
 ```
 
+Notice that the default Sonda configuration when no parameters are passed to
+`start_link` is equivalent to passing the `:any` option to `signals`, like
+in the following example:
+
+```elixir
+{:ok, pid} = Sonda.start_link(signals: :any)
+# Equivalent to
+{:ok, pid} = Sonda.start_link()
+```
+
 ## Common Usage
 
 ### ExUnit
@@ -182,9 +192,77 @@ end
 
 ## Advanced Usage
 
+### Sonda Agent
+
+When Sonda is started using `Sonda.start_link/*`, a
+[Sonda.Agent](https://hexdocs.pm/sonda/Sonda.Agent.html) is started behind
+the scenes, holding the state of a sink.
+By default, a [Sonda.Sink.Proxy](#sonda-sink-multi) is used, which is a proxy
+to multiple sinks.
+The default configuration provided to `Sonda.Sink.Proxy` holds only one
+sink: [Sonda.Sink.Memory](https://hexdocs.pm/sonda/Sonda.Sink.Memory.html),
+which provides the functionality of appending and inspecting messages.
+
+### The Sonda module
+
+The `Sonda` module delegates all the work to a special `Sonda.Agent` called
+`Sonda.Agent.Default`.
+`Sonda` utility functions can be used as long as
+the configuration of the `Sonda.Agent` uses a `Sonda.Sink.Proxy` with the
+first sink being a `Sonda.Sink.Memory`.
+
+This is not a limitation, feel free to create your own utility module and use
+that rather than the `Sonda` module.
+
+### The Sink protocol
+
+Sonda doesn't make assumptions on what you want to do with the signals
+recorded. It's sufficient to implement the
+[Sonda.Sink](https://hexdocs.pm/sonda/Sonda.Sink.html) protocol to record
+signals in the data structure of your choice.
+The sink data structure is stored in `Sonda.Agent`, so the data is kept as
+long as the process is running, without the need of having to implement a
+`GenServer`.
+
+The sink protocol requires the following function to be implemented:
+
+#### record(sink, signal, timestamp, data)
+
+- `sink` the data structure implementing `Sonda.Sink`
+- `signal` an atom
+- `timestamp` a `NaiveDateTime`
+- `data` any type of data
+
+This function should handle the message in any way you see fit.
+Sonda uses
+[Sonda.Sink.Memory](https://hexdocs.pm/sonda/Sonda.Sink.Memory.html) behind
+the scenes to provide the functionality of, appending messages and inspecting
+them.
+
+### Sonda.Sink.Proxy
+
+Sonda provides out of the box support for using multiple sinks.
+When starting Sonda, the option to provide an alternative list of sinks can
+be provided like in the following example:
+
+```elixir
+{:ok, pid} = Sonda.start_link(sinks: [a_sink, another_sink])
+```
+
+Notice that if the first sink is not a `Sonda.Sink.Memory`, all inspection
+functions on the `Sonda` module will not operate correctly.
+
+The following configuration preserves the default functionality of Sonda as
+well as expanding it with other sinks you see fit (for example, recording
+messages to a database):
+
+```elixir
+memory_sink = Sonda.Sink.Memory.configure(signals: :any)
+other_sink = %OtherSink{} # This is the sink implemented by you
+{:ok, pid} = Sonda.start_link(sinks: [memory_sink, other_sink])
+```
+
 TODO:
-- Multiple sinks
-- Custom sinks
 - Custom clock
 
 ## Thanks

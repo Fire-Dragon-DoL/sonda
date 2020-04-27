@@ -26,6 +26,11 @@ defmodule Sonda.Agent.Default do
     {sink, clock_now}
   end
 
+  def child_spec({config_opts, opts}) do
+    config = configure(config_opts)
+    Sonda.Agent.child_spec({config, opts})
+  end
+
   def child_spec(config_opts) do
     config_opts
     |> configure()

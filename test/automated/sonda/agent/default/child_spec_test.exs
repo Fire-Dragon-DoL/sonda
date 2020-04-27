@@ -25,4 +25,26 @@ defmodule Sonda.Agent.Default.ChildSpecTest do
       assert Process.alive?(agent)
     end
   end
+
+  describe "Input is configuration options and agent name option" do
+    test "Agent started" do
+      name = :"with_name_#{__MODULE__}"
+
+      agent =
+        start_supervised!({
+          Sonda.Agent.Default,
+          {
+            [
+              sinks: [Sonda.Sink.Null.configure()],
+              clock_now: &NaiveDateTime.utc_now/0
+            ],
+            [name: name]
+          }
+        })
+
+      agent_from_name = Process.whereis(name)
+
+      assert agent_from_name == agent
+    end
+  end
 end
